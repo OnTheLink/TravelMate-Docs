@@ -1,11 +1,11 @@
 openapi: 3.0.0
 servers:
-    - url: https://mboback.onthelink.nl:2100/api/v1
+    - url: https://api.onthelink.nl:2100/api/travelmate/v1
       description: API Server
 info:
     title: TravelMate API
     version: 0.1.0
-    termsOfService: "https://mboback.onthelink.nl:2100/terms/"
+    termsOfService: "https://api.onthelink.nl:2100/terms/"
     contact:
         name: API Support
         email: support@onthelink.nl
@@ -90,11 +90,13 @@ x-tagGroups:
           - current-user-object
           - user-object
 paths:
-    /auth/logout:
+    /logout:
         $ref: "./routes/auth/logout.yml#/route"
-    /auth/login:
+    /login:
         $ref: "./routes/auth/login.yml#/route"
-    /auth/register:
+    /login-by-token:
+        $ref: "./routes/auth/login.yml#/route-token"
+    /register:
         $ref: "./routes/auth/register.yml#/route"
 
 #    /auth/forgot-password:

@@ -15,6 +15,21 @@ responses:
                                 message: Logged in successfully.
                                 localizedMessage: Succesvol ingelogd.
                                 loginToken: 123e4567-e89b-12d3-a456-426614174000
+    LoggedInToken:
+        description: Login Successful
+        content:
+            application/json:
+                schema:
+                    $ref: "#/schemas/ISuccessToken"
+                examples:
+                    Success:
+                        value:
+                            status: success
+                            data:
+                                code: 200
+                                id: LOGGED_IN
+                                message: Logged in successfully.
+                                localizedMessage: Succesvol ingelogd.
     LoggedOut:
         description: Logout Successful
         content:

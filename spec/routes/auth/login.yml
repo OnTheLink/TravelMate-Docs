@@ -52,3 +52,54 @@ route:
                 $ref: "../../components/errors.yml#/responses/EncodingUnsupported"
             500:
                 $ref: "../../components/errors.yml#/responses/UnknownError"
+route-token:
+    post:
+        tags:
+            - auth
+        operationId: login-token
+        summary: Login with Token
+        description: |
+            Authenticates a user with a token and returns a `200` response if the token is valid.
+            This will result in a `401` if the token is either invalid, expired or used on a different device.
+
+        requestBody:
+            required: true
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        required:
+                            - username
+                            - login_token
+                            - device_id
+                        properties:
+                            username:
+                                type: string
+                                description: Username.
+                                example: User
+                            login_token:
+                                type: string
+                                format: uuid
+                                description: Login token. Used to authenticate the user.
+                                example: 123e4567-e89b-12d3-a456-426614174000
+                            device_id:
+                                type: string
+                                format: uuid
+                                description: |
+                                    Device ID. Used to identify the device that is logging in.
+                                    If the device is already known, the session will be created for the existing device.
+                                    If the device is unknown, a new device will be created and the session will be created for the new device.
+                                example: 123e4567-e89b-12d3-a456-426614174000
+
+        responses:
+            200:
+                $ref: "../../components/success.yml#/responses/LoggedInToken"
+
+            400:
+                $ref: "../../components/errors.yml#/responses/InvalidRequest"
+            413:
+                $ref: "../../components/errors.yml#/responses/BodyTooLarge"
+            415:
+                $ref: "../../components/errors.yml#/responses/EncodingUnsupported"
+            500:
+                $ref: "../../components/errors.yml#/responses/UnknownError"

@@ -10,7 +10,7 @@ route:
               in: query
               schema:
                   type: string
-                  example: uSkizzik
+                  example: MyUser
         responses:
             200:
                 description: Users Found

@@ -1,5 +1,5 @@
 route:
-    post:
+    put:
         tags:
             - auth
         operationId: register

@@ -1,0 +1,52 @@
+responses:
+    FetchedFile:
+        description: File Fetched
+        content:
+            application/json:
+                schema:
+                    $ref: "#/schemas/ISuccess"
+                examples:
+                    Success:
+                        value:
+                            noRealJson: This will not return a real json object, but a filestream.
+    UploadedFile:
+        description: File Uploaded
+        content:
+            application/json:
+                schema:
+                    $ref: "#/schemas/ISuccess"
+                examples:
+                    Success:
+                        value:
+                            status: success
+                            data:
+                                code: 202
+                                id: UPLOADED_FILE
+                                message: File uploaded successfully.
+                                localizedMessage: Bestand succesvol geüpload.
+
+schemas:
+    ISuccess:
+        type: object
+        properties:
+            status:
+                type: string
+                enum:
+                    - success
+                    - error
+                description: Status of the response
+            data:
+                type: object
+                properties:
+                    code:
+                        type: integer
+                        description: HTTP status code
+                    id:
+                        type: string
+                        description: Generic Error ID. Usually depends on the status code, however there are exceptions.
+                    message:
+                        type: string
+                        description: Human-readable error message, depends on the error id.
+                    localizedMessage:
+                        type: string
+                        description: Human-readable error message, depends on the error id. Translated to the language of the user or the request. Can be displayed on front end.

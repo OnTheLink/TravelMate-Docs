@@ -1,0 +1,19 @@
+route:
+    put:
+        security:
+            -   authToken: [ ]
+        tags:
+            - assets
+
+        operationId: upload-file
+        summary: Upload File
+        description: |
+            Uploads a file to the CDN. This can either be an image, video or audio file.
+        responses:
+            202:
+                $ref: "../../components/success.yml#/responses/UploadedFile"
+
+            401:
+                $ref: "../../components/errors.yml#/responses/Unauthorized"
+            500:
+                $ref: "../../components/errors.yml#/responses/UnknownError"

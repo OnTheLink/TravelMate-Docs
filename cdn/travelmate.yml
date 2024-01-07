@@ -1,0 +1,86 @@
+openapi: 3.0.0
+servers:
+    - url: https://cdn.onthelink.nl:2100/travelmate-cdn/
+      description: CDN Server
+info:
+    title: TravelMate CDN
+    version: 0.1.0
+    termsOfService: "https://api.onthelink.nl:2100/terms/"
+    contact:
+        name: CDN Support
+        email: support@onthelink.nl
+    x-logo:
+        url: "https://media.discordapp.net/attachments/1176828532505190430/1193041722184302722/2560px-Mborijnland.svg.png"
+    description: |
+        # Introduction
+        Welcome to the TravelMate CDN reference.
+
+        This reference (and the accompanying [docs](/)) is meant for developers who want to use the TravelMate CDN to host their files.
+        The endpoints this CDN provides are strictly made for use in the TravelMate android app.
+
+        This reference contains documentation on every CDN endpoint and objects.
+
+        ## Authorization
+        Please check the [docs](/auth) for more information.
+
+        ## Permissions
+        Please check the [docs](/permissions) for more information.
+
+        ## Requests
+        CDN requests to the CDN should be made using the HTTPS protocol so that traffic is encrypted.
+
+        In case something went wrong or the requested file was text, the CDN will return a JSON response with the following format:
+        ```json
+        {
+            "status": "success|error",
+            "data": {
+                "code": 200,
+                "id": "string",
+                "message": "string",
+                "localizedMessage": "string"
+                "fileContent": "string"
+            }
+        }
+        ```
+
+        All strings in the body are trimmed before being processed in any way.
+
+        The following methods are supported:
+        - GET - For retrieving data from the server. For example, getting a user's profile image or retrieving a video.
+        - PUT - Create or update elements. For example, uploading a new trip image or add a new badge as a developer.
+        - PATCH - For updating elements such as editing a trip image.
+        - DELETE - For deleting elements.
+
+        ## Errors
+        All sorts of errors can occur and they're usually the client's fault. The CDN follows a specific error format which is documented in each request.  
+        We don't document all possible cases because there are too many. Instead, we provide only basic generic examples for all requests. 
+        You're supposed to study the error format and handle it dynamically.
+x-tagGroups:
+    - name: Assets
+      tags:
+          - assets
+          - fetch
+          - upload
+
+paths:
+    /fetch:
+        $ref: "./routes/files/fetch.yml#/route"
+    /upload:
+        $ref: "./routes/files/upload.yml#/route"
+
+components:
+    securitySchemes:
+        authToken:
+            name: Authorization
+            type: apiKey
+            in: header
+            x-displayName: Auth Token (Bearer Token)
+            description: Standard user auth token. Received from `/login`.
+        permissions:
+            name: Permissions
+            type: Permissions
+            x-displayName: Permissions
+            description: |
+                This is defined as an authentication scheme because OpenAPI doesn't have a spec for permissions.  
+                The scope included is the permission required. These permissions are team-based.  
+                Teams are created and users are assigned to them globally across the site by the admins.

@@ -1,0 +1,19 @@
+route:
+    get:
+        security:
+            -   authToken: [ ]
+        tags:
+            - assets
+
+        operationId: fetch-file
+        summary: Fetch File
+        description: |
+            Fetches a file from the CDN. This can either be an image, video or audio file.
+        responses:
+            200:
+                $ref: "../../components/success.yml#/responses/FetchedFile"
+
+            401:
+                $ref: "../../components/errors.yml#/responses/Unauthorized"
+            500:
+                $ref: "../../components/errors.yml#/responses/UnknownError"

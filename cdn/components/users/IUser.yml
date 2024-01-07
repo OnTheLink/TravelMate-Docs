@@ -1,0 +1,180 @@
+schemas:
+    IUserDates:
+        type: object
+        description: Profile information of the user.
+        properties:
+            lastProfileChange:
+                type: string
+                format: date-time
+                default: null
+                nullable: true
+                readOnly: true
+                description: Date of the last change to the user's profile.
+
+    IUserProfile:
+        type: object
+        description: Profile information of the user.
+        example:
+            $ref: "#/examples/IUserProfile/value"
+        properties:
+            avatar:
+                type: string
+                default: null
+                nullable: true
+                description: Filename of the users's avatar. Stored on the CDN under `/users/<userId>/`.
+
+    IRegisteredUser:
+        type: object
+        example:
+            $ref: "#/examples/IRegisteredUser/value"
+        properties:
+            status:
+                type: string
+                enum:
+                    - success
+                    - error
+                description: Status of the response
+            data:
+                type: object
+                properties:
+                    code:
+                        type: integer
+                        description: HTTP status code
+                    id:
+                        type: string
+                        description: Generic Error ID. Usually depends on the status code, however there are exceptions.
+                    message:
+                        type: string
+                        description: Human-readable error message, depends on the error id.
+                    localizedMessage:
+                        type: string
+                        description: Human-readable error message, depends on the error id. Translated to the language of the user or the request. Can be displayed on front end.
+
+    ICurrentUser:
+        type: object
+        example:
+            $ref: "#/examples/ICurrentUser/value"
+        properties:
+            userId:
+                type: string
+                format: snowflake
+                readOnly: true
+            username:
+                type: string
+                description: Username of the user
+                minLength: 3
+                maxLength: 16
+                pattern: /^(?:[0-9A-Za-z]+|([\._-])(?!\1))+$/
+
+            email:
+                type: string
+                nullable: true
+                description: Email address of the user. Null if using OAuth2 and you don't have the email scope.
+                pattern: /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/
+#            emailVerified:
+#                type: boolean
+#                description: Whether the user has verified their email address
+#                default: false
+#                readOnly: true
+
+            profile:
+                $ref: "#/schemas/IUserProfile"
+
+            dates:
+                $ref: "#/schemas/IUserDates"
+
+    IUser:
+        type: object
+        example:
+            $ref: "#/examples/IUser/value"
+        properties:
+            status:
+                type: string
+                enum:
+                    - success
+                    - error
+                description: Status of the response
+            data:
+                type: object
+                properties:
+                    code:
+                        type: integer
+                        description: HTTP status code
+                    id:
+                        type: string
+                        description: Generic Error ID. Usually depends on the status code, however there are exceptions.
+                    message:
+                        type: string
+                        description: Human-readable error message, depends on the error id.
+                    localizedMessage:
+                        type: string
+                        description: Human-readable error message, depends on the error id. Translated to the language of the user or the request. Can be displayed on front end.
+                    results:
+                        type: array
+                        items:
+                            $ref: "#/schemas/ICurrentUser"
+                        description: Array of users matching the query
+
+examples:
+    IUserProfile:
+        value:
+            avatar: 0f88ef288f7c38970655af373bb748dd.webp
+
+    IRegisteredUser:
+        value:
+            status: success
+            data:
+                code: 200
+                id: REGISTER_SUCCESS
+                message: Registered successfully.
+                localizedMessage: Succesvol geregistreerd.
+
+    ICurrentUser:
+        value:
+            userId: 2456
+
+            username: TestUser
+            email: user@example.com
+            #            emailVerified: true
+
+            profile:
+                avatar: 0f88ef288f7c38970655af373bb748dd.webp
+
+            badges:
+                1:
+                    progress: 2345
+                    progressMax: 10000
+                2:
+                    progress: 2
+                    progressMax: 3
+                3:
+                    progress: 46
+                    progressMax: 100
+
+            dates:
+                lastProfileChange: 2020-08-23T05:17:28.158Z
+
+    IUser:
+        value:
+            userId: 2456
+
+            username: TestUser
+            email: user@example.com
+#            emailVerified: true
+
+            profile:
+                avatar: 0f88ef288f7c38970655af373bb748dd.webp
+
+            badges:
+                1:
+                    progress: 2345
+                    progressMax: 10000
+                2:
+                    progress: 2
+                    progressMax: 3
+                3:
+                    progress: 46
+                    progressMax: 100
+
+            dates:
+                lastProfileChange: 2020-08-23T05:17:28.158Z

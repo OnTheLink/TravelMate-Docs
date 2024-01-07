@@ -34,9 +34,14 @@ const config = {
                 // Plugin Options for loading OpenAPI files
                 specs: [
                     {
-                        id: "travelmate",
-                        spec: "spec/travelmate.yml",
-                        route: "/reference/",
+                        id: "api",
+                        spec: "api/travelmate.yml",
+                        route: "/reference/api/",
+                    },
+                    {
+                        id: "cdn",
+                        spec: "cdn/travelmate.yml",
+                        route: "/reference/cdn/",
                     },
                 ],
                 theme: {
@@ -62,8 +67,13 @@ const config = {
                         position: "left",
                     },
                     {
-                        href: "/reference",
+                        href: "/reference/api",
                         label: "API Reference",
+                        position: "left",
+                    },
+                    {
+                        href: "/reference/cdn",
+                        label: "CDN Reference",
                         position: "left",
                     },
                     {
@@ -94,7 +104,11 @@ const config = {
                             },
                             {
                                 label: "API Reference",
-                                to: "/reference",
+                                to: "/reference/api/",
+                            },
+                            {
+                                label: "CDN Reference",
+                                to: "/reference/cdn/",
                             },
                         ],
                     },

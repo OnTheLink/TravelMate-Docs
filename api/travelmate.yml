@@ -33,7 +33,12 @@ info:
         ```json
         {
             "status": "success|error",
-            "message": "A message describing the result of the request.",
+            "data": {
+                "code": 200,
+                "id": "string",
+                "message": "string",
+                "localizedMessage": "string"
+            }
         }
         ```
 

@@ -1,161 +1,158 @@
-// @ts-check
-// Note: type annotations allow type checking and IDEs autocompletion
-
 const lightCodeTheme = require("prism-react-renderer/themes/github");
 const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 
-/** @type {import('@docusaurus/types').Config} */
+/** @type {import("@docusaurus/types").Config} */
 const config = {
-  title: "My Site",
-  tagline: "Dinosaurs are cool",
-  url: "https://your-docusaurus-test-site.com",
-  baseUrl: "/",
-  onBrokenLinks: "throw",
-  onBrokenMarkdownLinks: "warn",
-  favicon: "img/favicon.ico",
+    title: "TravelMate Developer Docs",
+    url: "https://traveldocs-dev.onthelink.nl/",
+    baseUrl: "/",
+    onBrokenLinks: "throw",
+    onBrokenMarkdownLinks: "warn",
+    favicon: "https://mboback.onthelink.nl/favicon.ico",
+    organizationName: "OnTheLink",
+    projectName: "TravelMate Developer Docs",
 
-  // GitHub pages deployment config.
-  // If you aren't using GitHub pages, you don't need these.
-  organizationName: "facebook", // Usually your GitHub org/user name.
-  projectName: "docusaurus", // Usually your repo name.
-
-  presets: [
-    [
-      "classic",
-      /** @type {import('@docusaurus/preset-classic').Options} */
-      ({
-        docs: {
-          sidebarPath: require.resolve("./sidebars.js"),
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/",
-          docLayoutComponent: "@theme/DocPage",
-          docItemComponent: "@theme/ApiItem", // Derived from docusaurus-theme-openapi
-        },
-        blog: {
-          showReadingTime: true,
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/",
-        },
-        theme: {
-          customCss: require.resolve("./src/css/custom.css"),
-        },
-      }),
-    ],
-  ],
-
-  themeConfig:
-    /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
-    ({
-      docs: {
-        sidebar: {
-          hideable: true,
-        },
-      },
-      navbar: {
-        title: "My Site",
-        logo: {
-          alt: "My Site Logo",
-          src: "img/logo.svg",
-        },
-        items: [
-          {
-            type: "doc",
-            docId: "intro",
-            position: "left",
-            label: "Tutorial",
-          },
-          { to: "/blog", label: "Blog", position: "left" },
-          {
-            label: "Petstore API",
-            position: "left",
-            to: "/docs/category/petstore-api",
-          },
-          {
-            href: "https://github.com/facebook/docusaurus",
-            label: "GitHub",
-            position: "right",
-          },
+    presets: [
+        [
+            "classic",
+            /** @type {import("@docusaurus/preset-classic").Options} */
+            ({
+                docs: {
+                    routeBasePath: "/",
+                    sidebarPath: require.resolve("./sidebars.js"),
+                    editUrl: "https://github.com/OnTheLink/TravelMate-Docs/",
+                },
+                theme: {
+                    customCss: require.resolve("./src/css/custom.css"),
+                },
+                blog: false,
+            }),
         ],
-      },
-      footer: {
-        style: "dark",
-        links: [
-          {
-            title: "Docs",
-            items: [
-              {
-                label: "Tutorial",
-                to: "/docs/intro",
-              },
-            ],
-          },
-          {
-            title: "Community",
-            items: [
-              {
-                label: "Stack Overflow",
-                href: "https://stackoverflow.com/questions/tagged/docusaurus",
-              },
-              {
-                label: "Discord",
-                href: "https://discordapp.com/invite/docusaurus",
-              },
-              {
-                label: "Twitter",
-                href: "https://twitter.com/docusaurus",
-              },
-            ],
-          },
-          {
-            title: "More",
-            items: [
-              {
-                label: "Blog",
-                to: "/blog",
-              },
-              {
-                label: "GitHub",
-                href: "https://github.com/facebook/docusaurus",
-              },
-            ],
-          },
-        ],
-        copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
-      },
-      prism: {
-        theme: lightCodeTheme,
-        darkTheme: darkCodeTheme,
-        additionalLanguages: ["ruby", "csharp", "php"],
-      },
-    }),
-
-  plugins: [
-    [
-      "docusaurus-plugin-openapi-docs",
-      {
-        id: "openapi",
-        docsPluginId: "classic",
-        config: {
-          petstore: {
-            specPath: "examples/petstore.yaml",
-            outputDir: "docs/petstore",
-            downloadUrl:
-              "https://raw.githubusercontent.com/PaloAltoNetworks/docusaurus-template-openapi-docs/main/examples/petstore.yaml",
-            sidebarOptions: {
-              groupPathsBy: "tag",
-              categoryLinkSource: "tag",
+        [
+            "redocusaurus",
+            {
+                // Plugin Options for loading OpenAPI files
+                specs: [
+                    {
+                        id: "travelmate",
+                        spec: "spec/travelmate.yml",
+                        route: "/reference/",
+                    },
+                ],
+                theme: {
+                    primaryColor: "#772fbe",
+                    primaryColorDark: "#e42aaa",
+                },
             },
-          },
-        },
-      },
+        ],
     ],
-  ],
 
-  themes: ["docusaurus-theme-openapi-docs"],
+    themeConfig:
+        /** @type {import("@docusaurus/preset-classic").ThemeConfig} */
+        ({
+            navbar: {
+                title: "TravelMate",
+                logo: {
+                    src: "https://media.discordapp.net/attachments/1176828532505190430/1193041066312609792/new-logo_travelmate.png",
+                },
+                items: [
+                    {
+                        href: "/",
+                        label: "API Docs",
+                        position: "left",
+                    },
+                    {
+                        href: "/reference",
+                        label: "API Reference",
+                        position: "left",
+                    },
+                    {
+                        href: "https://mbopma.onthelink.nl:2100/",
+                        label: "phpMyAdmin (DB)",
+                        position: "right",
+                    },
+                ],
+            },
+            footer: {
+                style: "dark",
+                logo: {
+                    href: "https://mborijnland.nl/",
+                    src: "https://media.discordapp.net/attachments/1176828532505190430/1193041722184302722/2560px-Mborijnland.svg.png",
+                    width: 200,
+                },
+                links: [
+                    {
+                        title: "Project Docs",
+                        items: [
+                            {
+                                label: "Introduction",
+                                to: "/",
+                            },
+                            {
+                                label: "API Docs",
+                                to: "/",
+                            },
+                            {
+                                label: "API Reference",
+                                to: "/reference",
+                            },
+                        ],
+                    },
+                    {
+                        title: "Company",
+                        items: [
+                            {
+                                label: "Content Policy",
+                                href: "https://mboback.onthelink.nl:2100/content-policy",
+                            },
+                            {
+                                label: "Terms of Service",
+                                href: "https://mboback.onthelink.nl:2100/terms",
+                            },
+                            {
+                                label: "Privacy Policy",
+                                href: "https://mboback.onthelink.nl:2100/privacy",
+                            },
+                        ],
+                    },
+                    {
+                        title: "Resources",
+                        items: [
+                            {
+                                label: "GitHub (Docs)",
+                                href: "https://github.com/OnTheLink/TravelMate-Docs/",
+                            },
+                            {
+                                label: "GitHub (API)",
+                                href: "https://gitlab.onthelink.nl/mborijnland/exams/mobile-backend",
+                            },
+                        ],
+                    },
+                    {
+                        title: "Help",
+                        items: [
+                            {
+                                label: "Bug Tracker",
+                                href: "#",
+                            },
+                            {
+                                label: "Status",
+                                href: "#",
+                            },
+                            {
+                                label: "Support",
+                                href: "#",
+                            },
+                        ],
+                    },
+                ],
+                copyright: `Copyright © ${new Date().getFullYear()} <a href="https://mborijnland.nl/">MBO Rijnland</a> - All Rights Reserved`,
+            },
+            prism: {
+                theme: lightCodeTheme,
+                darkTheme: darkCodeTheme,
+            },
+        }),
 };
 
 module.exports = config;

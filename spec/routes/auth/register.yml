@@ -1,0 +1,52 @@
+route:
+    post:
+        tags:
+            - auth
+        operationId: register
+        summary: Register
+        description: |
+            Registers a new user and returns the basic information on success.
+        requestBody:
+            required: true
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        required:
+                            - username
+                            - email
+                            - password
+                        properties:
+                            username:
+                                type: string
+                                description: Username for the new user. Must be unique.
+                                minLength: 3
+                                maxLength: 16
+                                pattern: ^[0-9A-Za-z](?:[0-9A-Za-z]+|([._-])(?!\x01)(?=[0-9A-Za-z]))+$
+                                example: User
+                            email:
+                                type: string
+                                format: email
+                                description: Email for the new user. Must be unique.
+                            password:
+                                type: string
+                                format: password
+                                description: Plain password for the new user. It should meet the level 2 strength requirements of [check-password-strength](https://www.npmjs.com/package/check-password-strength)
+                                maxLength: 32
+
+        responses:
+            200:
+                description: Register Successful
+                content:
+                    application/json:
+                        schema:
+                            $ref: "../../components/users/IUser.yml#/schemas/IRegisteredUser"
+
+            400:
+                $ref: "../../components/errors.yml#/responses/InvalidRequest"
+            413:
+                $ref: "../../components/errors.yml#/responses/BodyTooLarge"
+            415:
+                $ref: "../../components/errors.yml#/responses/EncodingUnsupported"
+            500:
+                $ref: "../../components/errors.yml#/responses/UnknownError"

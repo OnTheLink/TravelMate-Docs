@@ -1,0 +1,350 @@
+openapi: 3.0.0
+servers:
+    - url: https://mboback.onthelink.nl:2100/api/v1
+      description: API Server
+info:
+    title: TravelMate API
+    version: 0.1.0
+    termsOfService: "https://mboback.onthelink.nl:2100/terms/"
+    contact:
+        name: API Support
+        email: support@onthelink.nl
+    x-logo:
+        url: "https://media.discordapp.net/attachments/1176828532505190430/1193041722184302722/2560px-Mborijnland.svg.png"
+    description: |
+        # Introduction
+        Welcome to the internal TravelMate API v1 reference.
+
+        This is a full-featured RESTful API which includes many things such as auth, administration, blog, game store, and much more. 
+
+        This reference (and the accompanying [docs](/)) are internal as they contain endpoints not meant to be used by the public.
+        Those endpoints are strictly made for use in the TravelMate android app.
+
+        This reference contains documentation on every API endpoint and objects.
+
+        ## Authorization
+        Please check the [docs](/auth) for more information.
+
+        ## Permissions
+        Please check the [docs](/permissions) for more information.
+
+        ## Requests
+        All requests to the API should be made using the HTTPS protocol so that traffic is encrypted.
+
+        It will always return a JSON object with the following format:
+        ```json
+        {
+            "status": "success|error",
+            "message": "A message describing the result of the request.",
+        }
+        ```
+
+        All strings in the body are trimmed before being processed in any way.
+
+        The following methods are supported:
+        - POST - For checking data against the server. For example, logging in.
+        - PUT - Create or update elements. For example, creating a new user.
+        - PATCH - For updating elements such as editing a trip or changing a user's password.
+        - DELETE - For deleting elements.
+
+        ## Errors
+        All sorts of errors can occur and they're usually the client's fault. The API follows a specific error format which is documented in each request.  
+        We don't document all possible cases because there are too many. Instead, we provide only basic generic examples for all requests. 
+        You're supposed to study the error format and handle it dynamically.
+tags:
+    - name: auth
+      description: Authentication and Authorization Endpoints - login, register, reset password, etc.
+      x-displayName: Authentication
+    - name: verify
+      description: Email Verification Endpoints - verify email, resend verification email and change verification email.
+      x-displayName: Email Verification
+
+    - name: "@me"
+      description: Actions related to the currently logged in user based on the provided access token. Includes account management, relationships, etc.
+      x-displayName: Current User
+    - name: user-profiles
+      description: Actions related to the the profiles of other users.
+      x-displayName: User Profiles
+
+    - name: user-profile-object
+      x-displayName: User Profile
+      description: |
+          <SchemaDefinition schemaRef="#/components/schemas/IUserProfile" />
+    - name: current-user-object
+      x-displayName: Current User
+      description: |
+          <SchemaDefinition schemaRef="#/components/schemas/ICurrentUser" />
+x-tagGroups:
+    - name: Authentication
+      tags:
+          - auth
+#          - verify
+
+    - name: Community
+      tags:
+          - "@me"
+          - user-profiles
+
+    - name: User Models
+      tags:
+          - current-user-object
+          - user-object
+paths:
+    /auth/logout:
+        $ref: "./routes/auth/logout.yml#/route"
+    /auth/login:
+        $ref: "./routes/auth/login.yml#/route"
+    /auth/register:
+        $ref: "./routes/auth/register.yml#/route"
+
+#    /auth/forgot-password:
+#        $ref: "./routes/auth/forgot-password.yml#/route"
+#    /auth/reset-password:
+#        $ref: "./routes/auth/reset-password.yml#/route"
+
+#    /auth/verify/email:
+#        $ref: "./routes//auth/verify/email.yml#/route"
+#    /auth/verify/resend-email:
+#        $ref: "./routes/auth/verify/resend-email.yml#/route"
+
+    /users/@me:
+        $ref: "./routes/users/@me/index.yml#/route"
+    /users/@me/profile:
+        $ref: "./routes/users/@me/profile.yml#/route"
+
+    /users:
+        $ref: "./routes/users/index.yml#/route"
+    /users/{userId}:
+        $ref: "./routes/users/{userId}/index.yml#/route"
+components:
+    securitySchemes:
+        authToken:
+            name: Authorization
+            type: apiKey
+            in: header
+            x-displayName: Auth Token
+            description: Standard user auth token. Received from `/login`.
+        clientCredentials:
+            type: http
+            scheme: basic
+            x-displayName: Client Credentials
+            description: Client Credentials for OAuth2. This should be the following `client_id:client_secret` encoded in base64. Required when calling the exchange OAuth2 code endpoint with `grant_type` set to `client_credentials`.
+        confirm:
+            name: Confirmation
+            type: Confirmation
+            x-displayName: Confirmation
+            description: |
+                This endpoint requires the user to confirm the action using their password or MFA code.  
+
+                - The first parameter is whether or not MFA is preferred over password. If it is and the user has MFA enabled, they have to supply their TOTP code. Otherwise either the password or the TOTP code works.  
+                - The second parameter is whether or not backup codes are allowed. If they are, they can be submitted in the `code` field.
+
+                Supply the code in the body as `code` or the password as `password`.
+        devPerms:
+            name: DevTeam Permissions
+            type: Permissions
+            x-displayName: DevTeam Permissions
+            description: |
+                This is defined as an authentication scheme because OpenAPI doesn't have a spec for permissions.  
+                The scope included is the permission required. These are defined by the member managers of each team.  
+                Most objects have their parent dev team's id stored as the devTeamId property but this changes depending on the object.
+        permissions:
+            name: Permissions
+            type: Permissions
+            x-displayName: Permissions
+            description: |
+                This is defined as an authentication scheme because OpenAPI doesn't have a spec for permissions.  
+                The scope included is the permission required. These permissions are team-based.  
+                Teams are created and users are assigned to them globally across the site by the admins.
+        oauth2:
+            type: oauth2
+            x-displayName: OAuth2
+            description: OAuth2 token with scopes. Received trough the OAuth2 flow.
+            flows:
+                authorizationCode:
+                    authorizationUrl: /auth/oauth2/authorize
+                    tokenUrl: /auth/oauth2/token
+                    scopes:
+                        identify: Receive information about the user.
+    schemas:
+        PaginationParams:
+            type: object
+            properties:
+                amount:
+                    name: amount
+                    in: query
+                    description: Amount of objects to return.
+                    schema:
+                        type: integer
+                        minimum: 1
+                        maximum: 20
+                        default: 20
+                        example: 15
+                offset:
+                    name: offset
+                    in: query
+                    description: Offset of returned objects. Allows you to skip the first X if you want to display your second page.
+                    schema:
+                        type: integer
+                        minimum: 0
+                        default: 0
+                        example: 15
+                search:
+                    name: search
+                    in: query
+                    description: Search string which searches different indexed fields depending on the object.
+                    schema:
+                        type: string
+                        default: ""
+                sortOrder:
+                    name: sortOrder
+                    in: query
+                    description: Determines the sorting order when sorting objects. True for ascending, false for descending.
+                    schema:
+                        type: boolean
+                        default: false
+        PaginationData:
+            type: object
+            readOnly: true
+            properties:
+                amount:
+                    type: integer
+                    minimum: 1
+                    maximum: 20
+                    default: 20
+                    example: 15
+                    description: Amount of objects returned
+                offset:
+                    type: integer
+                    minimum: 0
+                    default: 0
+                    example: 0
+                    description: Return offset
+                total:
+                    type: integer
+                    example: 20
+                    description: Total objects available for return based on the current query
+                calculations:
+                    type: object
+                    description: Useful values calculated on the above properties so you don't have to
+                    properties:
+                        totalPages:
+                            type: integer
+                            example: 2
+                            description: |
+                                Total amount of pages based on your query.  
+                                `Math.ceil(total / reqestedAmount)`
+                        currentPage:
+                            type: integer
+                            example: 0
+                            description: |
+                                Current page based on your query.  
+                                `Math.ceil((offset - 1) / amount) + 1`
+                        prevOffset:
+                            type: integer
+                            example: 0
+                            description: |
+                                The offset for the previous page based on your query. Always rounded up to 0.  
+                                `Math.max(offset - amount, 0)`
+                        nextOffset:
+                            type: integer
+                            example: 15
+                            description: |
+                                The offset for the next page based on your query. If it's bigger than the total amount of objects, it'll be the same as the request offset.  
+                                `offset + amount > total ? offset : offset + amount`
+        ICurrentUser:
+            $ref: "./components/users/IUser.yml#/schemas/ICurrentUser"
+
+        AuditLogsParams:
+            type: object
+            properties:
+                offset:
+                    name: offset
+                    in: query
+                    description: Return offset
+                    type: integer
+                    schema:
+                        minimum: 0
+                        default: 0
+                        example: 0
+                actionGroup:
+                    name: actionGroup
+                    in: query
+                    example: "mod.edit"
+                    description: Filter logs by specific action. Currently broken, otherwise requires a valid actionGroup.
+                    schema:
+                        type: string
+                user:
+                    name: user
+                    in: query
+                    example: 6941902252450182144
+                    description: Filter logs by the user who took the action. Either the userId or their username.
+                    schema:
+                        type: string
+                        format: snowflake
+        AuditLogs:
+            type: object
+            example:
+                $ref: "#/components/examples/AuditLogs/value"
+            properties:
+                pagination:
+                    $ref: "#/components/schemas/PaginationData"
+                data:
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            groupId:
+                                type: string
+                                format: snowflake
+                                description: The group this audit log entry belongs to. This can be a modId, devTeamId, gameId, or any id depending on what you're querying.
+                            userId:
+                                type: string
+                                format: snowflake
+                                description: The userId of the user who made this action regardless of it was done using an auth token or OAuth2.
+                            targetId:
+                                type: string
+                                format: snowflake
+                                description: The target of this action. This can be either the same as the groupId or a child object such as a mod release, mod screenshot, game depot or etc.
+
+                            action:
+                                type: string
+                                description: The action taken in a similar format to dev team permissions and OAuth2 scopes.
+                            data:
+                                type: object
+                                description: Additional data which changes depending on the action.
+                            timestamp:
+                                type: string
+                                format: date-time
+    examples:
+        AuditLogs:
+            value:
+                pagination:
+                    offset: 0
+                    amount: 15
+                    total: 60
+                data:
+                    - groupId: 7008337409924171776
+                      userId: 6941902252450182144
+                      targetId: 703984198007448576
+
+                      action: mod.release.edit
+                      data:
+                          "relationships":
+                              "old":
+                                  - "dependency": "7041945231780747264"
+                                    "type": 0
+                                  - "dependency": "https://github.com/BepInEx/BepInEx/releases/download/v5.4.21/BepInEx_x86_5.4.21.0.zip"
+                                    "type": 2
+                                    "displayName": "BepInEx"
+                                    "downloadableByLauncher": true
+
+                              "new":
+                                  - "dependency": "7041945231780747264"
+                                    "type": 0
+                                  - "dependency": "https://github.com/BepInEx/BepInEx/releases/download/v5.4.21/BepInEx_x86_5.4.21.0.zip"
+                                    "type": 2
+                                    "displayName": "BepInEx_x86_5.4.21.0.zip"
+                                    "downloadableByLauncher": true
+
+                      timestamp: 2023-04-21T22:39:35.529+00:00

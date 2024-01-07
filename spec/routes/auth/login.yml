@@ -1,0 +1,54 @@
+route:
+    post:
+        tags:
+            - auth
+        operationId: login
+        summary: Login
+        description: |
+            Creates a new session and returns an access token with full access to the account.
+            After a successful login, the client app should receive a new access token and store it.
+            
+            This access token can be used to authenticate requests to the API.
+            The access token is valid for `180` days and is only valid for the device that was used to login.
+
+        requestBody:
+            required: true
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        required:
+                            - username
+                            - password
+                            - device_id
+                        properties:
+                            username:
+                                type: string
+                                description: Username.
+                                example: User
+                            password:
+                                type: string
+                                format: password
+                                description: Plain user password.
+                                example: FooBar123
+                            device_id:
+                                type: string
+                                format: uuid
+                                description: |
+                                    Device ID. Used to identify the device that is logging in.
+                                    If the device is already known, the session will be created for the existing device.
+                                    If the device is unknown, a new device will be created and the session will be created for the new device.
+                                example: 123e4567-e89b-12d3-a456-426614174000
+
+        responses:
+            200:
+                $ref: "../../components/success.yml#/responses/LoggedIn"
+
+            400:
+                $ref: "../../components/errors.yml#/responses/InvalidRequest"
+            413:
+                $ref: "../../components/errors.yml#/responses/BodyTooLarge"
+            415:
+                $ref: "../../components/errors.yml#/responses/EncodingUnsupported"
+            500:
+                $ref: "../../components/errors.yml#/responses/UnknownError"

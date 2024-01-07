@@ -1,0 +1,86 @@
+responses:
+    LoggedIn:
+        description: Login Successful
+        content:
+            application/json:
+                schema:
+                    $ref: "#/schemas/ISuccessToken"
+                examples:
+                    Success:
+                        value:
+                            status: success
+                            data:
+                                code: 200
+                                id: LOGGED_IN
+                                message: Logged in successfully.
+                                localizedMessage: Succesvol ingelogd.
+                                loginToken: 123e4567-e89b-12d3-a456-426614174000
+    LoggedOut:
+        description: Logout Successful
+        content:
+            application/json:
+                schema:
+                    $ref: "#/schemas/ISuccess"
+                examples:
+                    Success:
+                        value:
+                            status: success
+                            data:
+                                code: 204
+                                id: LOGGED_OUT
+                                message: Logged out successfully.
+                                localizedMessage: Succesvol uitgelogd.
+
+schemas:
+    ISuccessToken:
+        type: object
+        properties:
+            status:
+                type: string
+                enum:
+                    - success
+                    - error
+                description: Status of the response
+            data:
+                type: object
+                properties:
+                    code:
+                        type: integer
+                        description: HTTP status code
+                    id:
+                        type: string
+                        description: Generic Error ID. Usually depends on the status code, however there are exceptions.
+                    message:
+                        type: string
+                        description: Human-readable error message, depends on the error id.
+                    localizedMessage:
+                        type: string
+                        description: Human-readable error message, depends on the error id. Translated to the language of the user or the request. Can be displayed on front end.
+                    loginToken:
+                        type: string
+                        format: uuid
+                        description: Login token. Used to authenticate the user.
+    ISuccess:
+        type: object
+        properties:
+            status:
+                type: string
+                enum:
+                    - success
+                    - error
+                description: Status of the response
+            data:
+                type: object
+                properties:
+                    code:
+                        type: integer
+                        description: HTTP status code
+                    id:
+                        type: string
+                        description: Generic Error ID. Usually depends on the status code, however there are exceptions.
+                    message:
+                        type: string
+                        description: Human-readable error message, depends on the error id.
+                    localizedMessage:
+                        type: string
+                        description: Human-readable error message, depends on the error id. Translated to the language of the user or the request. Can be displayed on front end.

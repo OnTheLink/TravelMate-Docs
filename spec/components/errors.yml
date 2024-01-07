@@ -1,0 +1,263 @@
+responses:
+    InvalidRequest:
+        description: Invalid Request
+        content:
+            application/json:
+                schema:
+                    $ref: "#/schemas/IError"
+                examples:
+                    Invalid Request:
+                        value:
+                            error:
+                                code: 400
+                                id: INVALID_REQUEST
+                                message: Invalid Request Data
+                                localizedMessage: Invalid Request Data
+                                errors:
+                                    body:
+                                        field:
+                                            _errors:
+                                                - code: "required"
+                                                  message: "Field is required."
+                                                  localizedMessage: "Field is required."
+                                            subField:
+                                                _errors:
+                                                    - code: "STRING_TOO_LONG"
+                                                      message: "Subfield must be at most 255 characters long."
+                                                      localizedMessage: "Subfield must be at most 255 characters long."
+                                                      data:
+                                                          limit: 255
+                    Body Parsing Failed:
+                        value:
+                            error:
+                                code: 400
+                                id: BODY_PARSING_FAILED
+                                message: Request body contains invalid JSON.
+                                localizedMessage: Request body contains invalid JSON.
+                    Request Aborted:
+                        value:
+                            error:
+                                code: 400
+                                id: REQUEST_ABORTED
+                                message: Request aborted before parsing has completed.
+                                localizedMessage: Request aborted before parsing has completed.
+                    Request Size Invalid:
+                        value:
+                            error:
+                                code: 400
+                                id: REQUEST_SIZE_INVALID
+                                message: Request size does not match Content-Length
+                                localizedMessage: Request size does not match Content-Length
+    Unauthorized:
+        description: Unauthorized
+        content:
+            application/json:
+                schema:
+                    $ref: "#/schemas/IError"
+                examples:
+                    Error:
+                        value:
+                            status: error
+                            data:
+                                code: 401
+                                id: MISSING_TOKEN
+                                message: No token was not provided.
+                                localizedMessage: Geen token opgegeven.
+    Forbidden:
+        description: Forbidden
+        content:
+            application/json:
+                schema:
+                    $ref: "#/schemas/IError"
+                examples:
+                    Missing Permissions:
+                        value:
+                            status: error
+                            data:
+                                code: 403
+                                id: MISSING_PERMISSIONS
+                                message: You are missing the required permissions to perform this action.
+                                localizedMessage: U heeft niet de juiste rechten om deze actie uit te voeren.
+                    Invalid Token:
+                        value:
+                            status: error
+                            data:
+                                code: 403
+                                id: INVALID_TOKEN
+                                message: Your session is expired or invalid.
+                                localizedMessage: Uw sessie is verlopen of ongeldig.
+                    Account Mismatch:
+                        value:
+                            status: error
+                            data:
+                                code: 403
+                                id: ACCOUNT_MISMATCH
+                                message: You need to be logged in the correct account to do this.
+                                localizedMessage: U moet ingelogd zijn met het juiste account om dit te kunnen doen.
+    ResourceNotFound:
+        description: Resource Not Found
+        content:
+            application/json:
+                schema:
+                    $ref: "#/schemas/IError"
+                examples:
+                    Error:
+                        value:
+                            error:
+                                code: 404
+                                id: RESOURCE_NOT_FOUND
+                                message: Resource Not Found
+                                localizedMessage: Resource Not Found
+                                errors:
+                                    body:
+                                        field:
+                                            _errors:
+                                                - code: "RESOURCE_NOT_FOUND"
+                                                  message: "Resource not found."
+                                                  localizedMessage: "Resource not found."
+    Conflict:
+        description: Conflict
+        content:
+            application/json:
+                schema:
+                    $ref: "#/schemas/IError"
+                examples:
+                    Error:
+                        value:
+                            error:
+                                code: 409
+                                id: CONFLICT
+                                message: Conflict
+                                localizedMessage: Conflict
+                                errors:
+                                    body:
+                                        field:
+                                            _errors:
+                                                - code: "CHANGED_TOO_RECENTLY"
+                                                  message: "This was changed too recently. Please try again later."
+                                                  localizedMessage: "This was changed too recently. Please try again later."
+                                                  data:
+                                                      lastChanged: "2019-01-01T00:00:00Z"
+                                                      changeableAgain: "2019-01-01T00:00:00Z"
+    BodyTooLarge:
+        description: Body Too Large
+        content:
+            application/json:
+                schema:
+                    $ref: "#/schemas/IError"
+                examples:
+                    Error:
+                        value:
+                            error:
+                                code: 413
+                                id: BODY_TOO_LARGE
+                                message: Request body is too large.
+                                localizedMessage: Request body is too large.
+    EncodingUnsupported:
+        description: Encoding Unsupported
+        content:
+            application/json:
+                schema:
+                    $ref: "#/schemas/IError"
+                examples:
+                    Error:
+                        value:
+                            error:
+                                code: 415
+                                id: ENCODING_UNSUPPORTED
+                                message: Request Content-Encoding not supported.
+                                localizedMessage: Request Content-Encoding not supported.
+    UnknownError:
+        description: Unknown Error
+        content:
+            application/json:
+                schema:
+                    $ref: "#/schemas/IError"
+                examples:
+                    Error:
+                        value:
+                            error:
+                                code: 500
+                                id: UNKNOWN_ERROR
+                                message: The server encountered an unknown error.
+                                localizedMessage: The server encountered an unknown error.
+
+schemas:
+    IFieldError:
+        type: object
+        properties:
+            id:
+                type: string
+                description: Generic Error ID.
+            message:
+                type: string
+                description: Human-readable error message, depends on the error id.
+            localizedMessage:
+                type: string
+                description: Human-readable error message, depends on the error id. Translated to the language of the user or the request. Can be displayed on front end.
+            data:
+                type: object
+                nullable: true
+                description: Object containing key-value info about the error. Intended to be used to read information about the limits of the field by a machine.
+
+    IFieldErrors:
+        type: object
+        description: List of field errors, where `field` is the field name. Errors related to the field's value are contained in `_errors`. Subfield errors are contained as additional properties.
+        properties:
+            _errors:
+                type: array
+                nullable: true
+                items:
+                    $ref: "#/schemas/IFieldError"
+            field:
+                $ref: "#/schemas/IFieldErrors"
+
+    IBaseFieldErrors:
+        type: object
+        properties:
+            params:
+                type: object
+                nullable: true
+                description: Request param errors
+                properties:
+                    field:
+                        $ref: "#/schemas/IFieldErrors"
+            query:
+                type: object
+                nullable: true
+                description: Request query errors
+                properties:
+                    field:
+                        $ref: "#/schemas/IFieldErrors"
+            body:
+                type: object
+                nullable: true
+                description: Request body errors
+                properties:
+                    field:
+                        $ref: "#/schemas/IFieldErrors"
+
+    IError:
+        type: object
+        properties:
+            status:
+                type: string
+                enum:
+                    - success
+                    - error
+                description: Status of the response
+            data:
+                type: object
+                properties:
+                    code:
+                        type: integer
+                        description: HTTP status code
+                    id:
+                        type: string
+                        description: Generic Error ID. Usually depends on the status code, however there are exceptions.
+                    message:
+                        type: string
+                        description: Human-readable error message, depends on the error id.
+                    localizedMessage:
+                        type: string
+                        description: Human-readable error message, depends on the error id. Translated to the language of the user or the request. Can be displayed on front end.

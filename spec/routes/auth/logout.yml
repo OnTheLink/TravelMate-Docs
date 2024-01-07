@@ -1,0 +1,18 @@
+route:
+    post:
+        tags:
+            - auth
+        operationId: logout
+        summary: Logout
+        description: |
+            Destroys the current session and invalidates the access token.
+        responses:
+            204:
+                $ref: "../../components/success.yml#/responses/LoggedOut"
+
+            401:
+                $ref: "../../components/errors.yml#/responses/Unauthorized"
+            403:
+                $ref: "../../components/errors.yml#/responses/Forbidden"
+            500:
+                $ref: "../../components/errors.yml#/responses/UnknownError"

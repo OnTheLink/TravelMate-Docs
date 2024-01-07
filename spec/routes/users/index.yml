@@ -1,0 +1,28 @@
+route:
+    get:
+        tags: [user-profiles]
+        operationId: list-users
+        summary: List Users
+        description: |
+            List TravelMate users by search query.
+        parameters:
+            - name: search
+              in: query
+              schema:
+                  type: string
+                  example: uSkizzik
+        responses:
+            200:
+                description: Users Found
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                data:
+                                    type: array
+                                    items:
+                                        $ref: "../../components/users/IUser.yml#/schemas/IUser"
+
+            500:
+                $ref: "../../components/errors.yml#/responses/UnknownError"

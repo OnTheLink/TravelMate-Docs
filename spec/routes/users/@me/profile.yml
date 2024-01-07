@@ -1,0 +1,43 @@
+route:
+    patch:
+        tags: ["@me"]
+        operationId: edit-profile
+        summary: Edit Profile
+        description: |
+            Edit profile of the current user. This endpoint has the body size limit lifted to 50MB to allow for multiple image uploads at once.
+        security:
+            - authToken: []
+        requestBody:
+            content:
+                application/json:
+                    schema:
+                        allOf:
+                            - $ref: "../../../components/users/IUser.yml#/schemas/IUserProfile"
+                            - type: object
+                              properties:
+                                  avatar:
+                                      format: byte
+                                      description: Base64-encoded data url of a png or jpeg image. Maximum file size is 8MB. Minimum dimensions are 128x128.
+                                  banner:
+                                      format: byte
+                                      description: Base64-encoded data url of a png or jpeg image. Maximum file size is 16MB. Minimum dimensions are 720x360.
+        responses:
+            200:
+                description: Updated User Info
+                content:
+                    application/json:
+                        schema:
+                            $ref: "../../../components/users/IUser.yml#/schemas/ICurrentUser"
+
+            400:
+                $ref: "../../../components/errors.yml#/responses/InvalidRequest"
+            401:
+                $ref: "../../../components/errors.yml#/responses/Unauthorized"
+            403:
+                $ref: "../../../components/errors.yml#/responses/Forbidden"
+            413:
+                $ref: "../../../components/errors.yml#/responses/BodyTooLarge"
+            415:
+                $ref: "../../../components/errors.yml#/responses/EncodingUnsupported"
+            500:
+                $ref: "../../../components/errors.yml#/responses/UnknownError"

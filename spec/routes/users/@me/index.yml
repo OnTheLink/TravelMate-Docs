@@ -1,0 +1,108 @@
+route:
+    get:
+        tags: ["@me"]
+        operationId: get-self
+        summary: Get Self
+        description: |
+            Returns information about the current user. If called trough OAuth2, the `email` scope is required for the email to be returned.
+        responses:
+            200:
+                description: User Info
+                content:
+                    application/json:
+                        schema:
+                            allOf:
+                                - $ref: "../../../components/users/IUser.yml#/schemas/ICurrentUser"
+                                - type: object
+                                  properties:
+                                      permissions:
+                                          type: integer
+                                          nullable: true
+                                          example: 1024
+                                          description: |
+                                              Site-wide permissions which the user has.
+                                              Undefined if the user doesn't have any to hide the functionality from the public.
+                                      profile:
+                                          $ref: "../../../components/users/IUser.yml#/schemas/IUserProfile"
+
+            401:
+                $ref: "../../../components/errors.yml#/responses/Unauthorized"
+            403:
+                $ref: "../../../components/errors.yml#/responses/Forbidden"
+            500:
+                $ref: "../../../components/errors.yml#/responses/UnknownError"
+    patch:
+        tags: ["@me"]
+        operationId: edit-account
+        summary: Edit Account
+        description: |
+            Edit account (not profile) information about the current user.
+        requestBody:
+            content:
+                application/json:
+                    schema:
+                        oneOf:
+                            - type: object
+                              title: Change Email
+                              required: [email]
+                              properties:
+                                  email:
+                                      allOf:
+                                          - $ref: "../../../components/users/IUser.yml#/schemas/ICurrentUser/properties/email"
+                                          - description: |
+                                                New email address for the user. An email verification code will be sent to the new address.
+                                                Changing the user's email has a cooldown of 3 days.
+                                  emailCode:
+                                      type: string
+                                      description: If not specified, will send the verification email.
+                                      example: 123456
+                                  password:
+                                      type: string
+                                      format: password
+                                      description: The user's current password. Required only when sending the verification email.
+                            - type: object
+                              title: Change Password
+                              required: [password, newPassword]
+                              properties:
+                                  password:
+                                      type: string
+                                      format: password
+                                      description: The user's current password.
+                                  newPassword:
+                                      type: string
+                                      format: password
+                                      description: Plain password for the new user. It should meet the level 2 strength requirements of [check-password-strength](https://www.npmjs.com/package/check-password-strength)
+                                      maxLength: 32
+                            - type: object
+                              title: Change Username
+                              required: [username]
+                              properties:
+                                  username:
+                                      allOf:
+                                          - $ref: "../../../components/users/IUser.yml#/schemas/ICurrentUser/properties/username"
+                                          - description: |
+                                                New username for the user. Changing it has a cooldown of 14 days.
+        responses:
+            200:
+                description: User Info
+                content:
+                    application/json:
+                        schema:
+                            $ref: "../../../components/users/IUser.yml#/schemas/ICurrentUser"
+            204:
+                description: Email Verification Sent
+
+            400:
+                $ref: "../../../components/errors.yml#/responses/InvalidRequest"
+            401:
+                $ref: "../../../components/errors.yml#/responses/Unauthorized"
+            403:
+                $ref: "../../../components/errors.yml#/responses/Forbidden"
+            409:
+                $ref: "../../../components/errors.yml#/responses/Conflict"
+            413:
+                $ref: "../../../components/errors.yml#/responses/BodyTooLarge"
+            415:
+                $ref: "../../../components/errors.yml#/responses/EncodingUnsupported"
+            500:
+                $ref: "../../../components/errors.yml#/responses/UnknownError"

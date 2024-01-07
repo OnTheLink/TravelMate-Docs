@@ -1,0 +1,44 @@
+route:
+    get:
+        tags: [user-profiles]
+        operationId: get-user
+        summary: Get User
+        description: |
+            Get information about a user.
+        parameters:
+            - name: userId
+              in: path
+              required: true
+              schema:
+                  type: string
+                  example: 289557710796492800
+        responses:
+            200:
+                description: User Found
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                blocked:
+                                    type: boolean
+                                    description: Whether or not the target user has blocked the current user
+                                following:
+                                    type: array
+                                    nullable: true
+                                    description: People the target user is following. Returned only if the target user's privacy settings allow that.
+                                    items:
+                                        $ref: "../../../components/users/IUser.yml#/schemas/IUser"
+                                followers:
+                                    type: array
+                                    nullable: true
+                                    description: People following the target user. Returned only if the target user's privacy settings allow that.
+                                    items:
+                                        $ref: "../../../components/users/IUser.yml#/schemas/IUser"
+                                user:
+                                    $ref: "../../../components/users/IUser.yml#/schemas/IUser"
+
+            404:
+                $ref: "../../../components/errors.yml#/responses/ResourceNotFound"
+            500:
+                $ref: "../../../components/errors.yml#/responses/UnknownError"

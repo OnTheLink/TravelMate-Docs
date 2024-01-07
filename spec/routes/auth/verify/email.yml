@@ -1,0 +1,86 @@
+route:
+    post:
+        tags:
+            - verify
+        operationId: verification.verify
+        summary: Verify Email
+        description: |
+            Verifies the user's email address via the token sent to the user's email address upon registration.
+        requestBody:
+            required: true
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        required:
+                            - token
+                        properties:
+                            token:
+                                type: string
+                                format: jwt
+                                description: The token sent to the user's email address upon registration. It's a JWT containing the user's id, username and email that expires in 24 hours.
+                                example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJTS1VzZXItNjk0MDA0MDQxMDY3Mzc2NzQyNCIsInVzZXJuYW1lIjoiVGVzdCIsImVtYWlsIjoicnN0b3Fub3YxMEBnbWFpbC5jb20iLCJpYXQiOjE2NTYyMjc4MzAsImV4cCI6MTY1NjMxNDIzMH0.mQDifm0dw4ycAb0FZTfq4gI6ZKqqdgeVrCiJF3PBpxM"
+        responses:
+            204:
+                description: Email Verified
+
+            400:
+                $ref: "../../../components/errors.yml#/responses/InvalidRequest"
+            409:
+                $ref: "../../../components/errors.yml#/responses/Conflict"
+            413:
+                $ref: "../../../components/errors.yml#/responses/BodyTooLarge"
+            415:
+                $ref: "../../../components/errors.yml#/responses/EncodingUnsupported"
+            500:
+                $ref: "../../../components/errors.yml#/responses/UnknownError"
+    patch:
+        tags:
+            - verify
+        operationId: verification.change-email
+        summary: Change Email
+        description: |
+            Changes the user's email and sends a verification email to the new address.
+            This endpoint requires the email to not be verified. For post-verification email change, patch `/@me`.
+        requestBody:
+            required: true
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        required:
+                            - userId
+                            - email
+                            - password
+                            - captcha
+                        properties:
+                            userId:
+                                type: string
+                                example: 694040410673767424
+                            email:
+                                type: string
+                                format: email
+                            password:
+                                type: string
+                                format: password
+                            captcha:
+                                type: string
+                                format: captcha
+                                description: The captcha token provided by hCaptcha. For development, use `10000000-aaaa-bbbb-cccc-000000000001`.
+                                example: 10000000-aaaa-bbbb-cccc-000000000001
+        responses:
+            204:
+                description: Email Changed
+
+            400:
+                $ref: "../../../components/errors.yml#/responses/InvalidRequest"
+            403:
+                $ref: "../../../components/errors.yml#/responses/Forbidden"
+            409:
+                $ref: "../../../components/errors.yml#/responses/Conflict"
+            413:
+                $ref: "../../../components/errors.yml#/responses/BodyTooLarge"
+            415:
+                $ref: "../../../components/errors.yml#/responses/EncodingUnsupported"
+            500:
+                $ref: "../../../components/errors.yml#/responses/UnknownError"

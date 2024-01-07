@@ -1,0 +1,42 @@
+route:
+    post:
+        tags:
+            - verify
+        operationId: verification.resend
+        summary: Resend Email
+        description: |
+            Resends the verification email to the user's email address.
+        requestBody:
+            required: true
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        required:
+                            - userId
+                        properties:
+                            userId:
+                                type: string
+                                example: 694040410673767424
+                            captcha:
+                                type: string
+                                format: captcha
+                                description: The captcha token provided by hCaptcha. For development, use `10000000-aaaa-bbbb-cccc-000000000001`.
+                                example: 10000000-aaaa-bbbb-cccc-000000000001
+
+        responses:
+            204:
+                description: Email Resent
+
+            400:
+                $ref: "../../../components/errors.yml#/responses/InvalidRequest"
+            404:
+                $ref: "../../../components/errors.yml#/responses/ResourceNotFound"
+            409:
+                $ref: "../../../components/errors.yml#/responses/Conflict"
+            413:
+                $ref: "../../../components/errors.yml#/responses/BodyTooLarge"
+            415:
+                $ref: "../../../components/errors.yml#/responses/EncodingUnsupported"
+            500:
+                $ref: "../../../components/errors.yml#/responses/UnknownError"

@@ -15,8 +15,6 @@ info:
         # Introduction
         Welcome to the internal TravelMate API v1 reference.
 
-        This is a full-featured RESTful API which includes many things such as auth, administration, blog, game store, and much more. 
-
         This reference (and the accompanying [docs](/)) are internal as they contain endpoints not meant to be used by the public.
         Those endpoints are strictly made for use in the TravelMate android app.
 

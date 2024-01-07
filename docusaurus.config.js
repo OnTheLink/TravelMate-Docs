@@ -8,7 +8,7 @@ const config = {
     baseUrl: "/",
     onBrokenLinks: "throw",
     onBrokenMarkdownLinks: "warn",
-    favicon: "https://mboback.onthelink.nl/favicon.ico",
+    favicon: "https://cdn.onthelink.nl/travelmate-cdn/favicon.ico",
     organizationName: "OnTheLink",
     projectName: "TravelMate Developer Docs",
 
@@ -67,7 +67,7 @@ const config = {
                         position: "left",
                     },
                     {
-                        href: "https://mbopma.onthelink.nl:2100/",
+                        href: "https://pma.onthelink.nl:2100/",
                         label: "phpMyAdmin (DB)",
                         position: "right",
                     },
@@ -123,8 +123,12 @@ const config = {
                                 href: "https://github.com/OnTheLink/TravelMate-Docs/",
                             },
                             {
-                                label: "GitHub (API)",
-                                href: "https://gitlab.onthelink.nl/mborijnland/exams/mobile-backend",
+                                label: "GitLab (API)",
+                                href: "https://gitlab.onthelink.nl/onthelink/servers/api",
+                            },
+                            {
+                                label: "GitLab (CDN)",
+                                href: "https://gitlab.onthelink.nl/onthelink/servers/cdn",
                             },
                         ],
                     },

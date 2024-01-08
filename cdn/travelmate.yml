@@ -5,7 +5,7 @@ servers:
 info:
     title: TravelMate CDN
     version: 0.1.0
-    termsOfService: "https://api.onthelink.nl:2100/terms/"
+    termsOfService: "https://tm.onthelink.nl:2100/terms/"
     contact:
         name: CDN Support
         email: support@onthelink.nl

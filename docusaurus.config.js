@@ -117,15 +117,15 @@ const config = {
                         items: [
                             {
                                 label: "Content Policy",
-                                href: "https://mboback.onthelink.nl:2100/content-policy",
+                                href: "https://tm.onthelink.nl:2100/content-policy",
                             },
                             {
                                 label: "Terms of Service",
-                                href: "https://mboback.onthelink.nl:2100/terms",
+                                href: "https://tm.onthelink.nl:2100/terms",
                             },
                             {
                                 label: "Privacy Policy",
-                                href: "https://mboback.onthelink.nl:2100/privacy",
+                                href: "https://tm.onthelink.nl:2100/privacy",
                             },
                         ],
                     },
@@ -164,7 +164,7 @@ const config = {
                         ],
                     },
                 ],
-                copyright: `Copyright © ${new Date().getFullYear()} <a href="https://mborijnland.nl/">MBO Rijnland</a> - All Rights Reserved`,
+                copyright: `Copyright © ${new Date().getFullYear()} <a href="#">TravelMate</a> - All Rights Reserved`,
             },
             prism: {
                 theme: lightCodeTheme,

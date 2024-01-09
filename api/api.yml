@@ -1,0 +1,176 @@
+openapi: 3.0.0
+servers:
+    - url: https://api.onthelink.nl:2100/api/travelmate/v1
+      description: API Server
+info:
+    title: API
+    version: 0.1.0
+    termsOfService: "https://tm.onthelink.nl:2100/terms/"
+    contact:
+        name: API Support
+        email: support@onthelink.nl
+    x-logo:
+        url: "https://media.discordapp.net/attachments/1176828532505190430/1193041722184302722/2560px-Mborijnland.svg.png"
+    description: |
+        # Introduction
+        Welcome to the internal TravelMate API v1 reference.
+
+        This reference (and the accompanying [docs](/)) are internal as they contain endpoints not meant to be used by the public.
+        Those endpoints are strictly made for use in the TravelMate android app.
+
+        This reference contains documentation on every API endpoint and objects.
+
+        ## Authorization
+        Please check the [docs](/auth) for more information.
+
+        ## Permissions
+        Please check the [docs](/permissions) for more information.
+
+        ## Requests
+        All requests to the API should be made using the HTTPS protocol so that traffic is encrypted.
+
+        It will always return a JSON object with the following format:
+        ```json
+        {
+            "status": "success|error",
+            "data": {
+                "code": 200,
+                "id": "string",
+                "message": "string",
+                "localizedMessage": "string"
+            }
+        }
+        ```
+
+        All strings in the body are trimmed before being processed in any way.
+
+        The following methods are supported:
+        - POST - For checking data against the server. For example, logging in.
+        - PUT - Create or update elements. For example, creating a new user.
+        - PATCH - For updating elements such as editing a trip or changing a user's password.
+        - DELETE - For deleting elements.
+
+        ## Errors
+        All sorts of errors can occur and they're usually the client's fault. The API follows a specific error format which is documented in each request.  
+        We don't document all possible cases because there are too many. Instead, we provide only basic generic examples for all requests. 
+        You're supposed to study the error format and handle it dynamically.
+tags:
+    - name: auth
+      description: Authentication and Authorization Endpoints - login, register, reset password, etc.
+      x-displayName: Authentication
+    - name: verify
+      description: Email Verification Endpoints - verify email, resend verification email and change verification email.
+      x-displayName: Email Verification
+
+    - name: "@me"
+      description: Actions related to the currently logged in user based on the provided access token. Includes account management, relationships, etc.
+      x-displayName: Current User
+    - name: user-profiles
+      description: Actions related to the the profiles of other users.
+      x-displayName: User Profiles
+
+    - name: user-profile-object
+      x-displayName: User Profile
+      description: |
+          <SchemaDefinition schemaRef="#/components/schemas/IUserProfile" />
+    - name: current-user-object
+      x-displayName: Current User
+      description: |
+          <SchemaDefinition schemaRef="#/components/schemas/ICurrentUser" />
+x-tagGroups:
+    - name: Authentication
+      tags:
+          - auth
+#          - verify
+
+    - name: Community
+      tags:
+          - "@me"
+          - user-profiles
+
+    - name: User Models
+      tags:
+          - current-user-object
+          - user-object
+paths:
+    /logout:
+        $ref: "./routes/auth/logout.yml#/route"
+    /login:
+        $ref: "./routes/auth/login.yml#/route"
+    /login-by-token:
+        $ref: "./routes/auth/login.yml#/route-token"
+    /register:
+        $ref: "./routes/auth/register.yml#/route"
+
+#    /auth/forgot-password:
+#        $ref: "./routes/auth/forgot-password.yml#/route"
+#    /auth/reset-password:
+#        $ref: "./routes/auth/reset-password.yml#/route"
+
+#    /auth/verify/email:
+#        $ref: "./routes//auth/verify/email.yml#/route"
+#    /auth/verify/resend-email:
+#        $ref: "./routes/auth/verify/resend-email.yml#/route"
+
+    /users/@me:
+        $ref: "./routes/users/@me/index.yml#/route"
+    /users/@me/profile:
+        $ref: "./routes/users/@me/profile.yml#/route"
+
+    /users:
+        $ref: "./routes/users/index.yml#/route"
+    /users/{userId}:
+        $ref: "./routes/users/{userId}/index.yml#/route"
+components:
+    securitySchemes:
+        authToken:
+            name: Authorization
+            type: apiKey
+            in: header
+            x-displayName: Auth Token
+            description: Standard user auth token. Received from `/login`.
+        clientCredentials:
+            type: http
+            scheme: basic
+            x-displayName: Client Credentials
+            description: Client Credentials for OAuth2. This should be the following `client_id:client_secret` encoded in base64. Required when calling the exchange OAuth2 code endpoint with `grant_type` set to `client_credentials`.
+        confirm:
+            name: Confirmation
+            type: Confirmation
+            x-displayName: Confirmation
+            description: |
+                This endpoint requires the user to confirm the action using their password or MFA code.  
+
+                - The first parameter is whether or not MFA is preferred over password. If it is and the user has MFA enabled, they have to supply their TOTP code. Otherwise either the password or the TOTP code works.  
+                - The second parameter is whether or not backup codes are allowed. If they are, they can be submitted in the `code` field.
+
+                Supply the code in the body as `code` or the password as `password`.
+        devPerms:
+            name: DevTeam Permissions
+            type: Permissions
+            x-displayName: DevTeam Permissions
+            description: |
+                This is defined as an authentication scheme because OpenAPI doesn't have a spec for permissions.  
+                The scope included is the permission required. These are defined by the member managers of each team.  
+                Most objects have their parent dev team's id stored as the devTeamId property but this changes depending on the object.
+        permissions:
+            name: Permissions
+            type: Permissions
+            x-displayName: Permissions
+            description: |
+                This is defined as an authentication scheme because OpenAPI doesn't have a spec for permissions.  
+                The scope included is the permission required. These permissions are team-based.  
+                Teams are created and users are assigned to them globally across the site by the admins.
+        oauth2:
+            type: oauth2
+            x-displayName: OAuth2
+            description: OAuth2 token with scopes. Received trough the OAuth2 flow.
+            flows:
+                authorizationCode:
+                    authorizationUrl: /auth/oauth2/authorize
+                    tokenUrl: /auth/oauth2/token
+                    scopes:
+                        identify: Receive information about the user.
+    schemas:
+        ICurrentUser:
+            $ref: "./components/users/IUser.yml#/schemas/ICurrentUser"

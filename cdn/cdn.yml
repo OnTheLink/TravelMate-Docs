@@ -3,7 +3,7 @@ servers:
     - url: https://cdn.onthelink.nl:2100/travelmate-cdn/
       description: CDN Server
 info:
-    title: TravelMate CDN
+    title: CDN
     version: 0.1.0
     termsOfService: "https://tm.onthelink.nl:2100/terms/"
     contact:

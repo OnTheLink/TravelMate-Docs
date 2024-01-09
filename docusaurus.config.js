@@ -35,12 +35,12 @@ const config = {
                 specs: [
                     {
                         id: "api",
-                        spec: "api/travelmate.yml",
+                        spec: "api/api.yml",
                         route: "/reference/api/",
                     },
                     {
                         id: "cdn",
-                        spec: "cdn/travelmate.yml",
+                        spec: "cdn/cdn.yml",
                         route: "/reference/cdn/",
                     },
                 ],
